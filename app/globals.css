@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* html+body overflow-x:hidden is a deliberate safety net, not decoration: any
+   absolutely-positioned element with a negative left/right/bottom offset (the
+   overlapping "story photo detail" on Home, decorative Illustrations, etc.)
+   expands the document's scrollWidth even when its own parent has
+   overflow-hidden, because that clipping is local to the parent box, not the
+   viewport. Without this, a single rogue negative-offset element anywhere on
+   the site silently reintroduces a horizontal scrollbar on phones. */
+html, body { overflow-x: hidden; }
+body { margin: 0; }
+
+/* Custom cursor (components/CustomCursor.tsx) — a plain CSS `cursor: url()`
+   can't react to hover, it's a static bitmap, so the flower-stays-a-flower-
+   but-gets-more-vivid-on-hover behavior is done as a real DOM element that
+   tracks the pointer instead. `.has-custom-cursor` is added by that component
+   only after confirming a fine (mouse) pointer is present — see the comment
+   there for why. Text fields are the one deliberate exception: typing needs
+   a visible caret/I-beam to know where input lands, which the flower cursor
+   can't communicate, so those get the native text cursor back. Everything
+   else (including links/buttons) keeps the flower per the "don't switch to a
+   pointer" requirement — hover feedback there comes from .cursor-vivid on
+   the cursor element itself (see below), not from swapping cursor shape. */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none;
+}
+.has-custom-cursor input,
+.has-custom-cursor textarea,
+.has-custom-cursor select {
+  cursor: text;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  transition: opacity 0.2s ease, filter 0.25s ease;
+  filter: saturate(1) brightness(1) drop-shadow(0 0 0 rgba(193, 99, 59, 0));
+}
+/* Added on the cursor element while the pointer is over any interactive
+   element (a, button, input, etc.) — the flower stays a flower but pops:
+   more saturated, slightly brighter, with a soft terracotta glow. */
+.cursor-dot.cursor-vivid {
+  filter: saturate(2.6) brightness(1.25) drop-shadow(0 2px 8px rgba(193, 99, 59, 0.6));
+}
+
+a { color: #C1633B; }
+/* Scoped to skip .cta-btn: without this, every button-styled Link (terracotta
+   background, cream text) inherited this olive hover color and became
+   illegible on hover. Plain inline text links still get the olive hover as
+   originally designed — only buttons opt out via .cta-btn. */
+a:hover:not(.cta-btn) { color: #5F6B45; }
+
+@keyframes pageFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.page-transition { animation: pageFade 0.5s cubic-bezier(.22,.9,.28,1) both; }
+
+.reveal { transition: opacity 0.9s cubic-bezier(.22,.9,.28,1), transform 0.9s cubic-bezier(.22,.9,.28,1); }
+.reveal.pre { opacity: 0; transform: translateY(28px); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+.scrollx { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+.scrollx::-webkit-scrollbar { height: 0; }
+.scrollx > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+/*
+  CTA button treatment — every terracotta "Enquire" / "Send Enquiry" / etc.
+  button sitewide. Two ingredients instead of a plain color-darken-on-hover:
+  1. A diagonal light sweep (the ::before gradient) that travels across the
+     button on hover, like light catching glass.
+  2. A lift + terracotta-tinted glow on hover, and a quick scale-down "press"
+     on click — so it visibly responds to the click itself, not just hover.
+  All pure CSS (no JS), and reused everywhere via one class instead of each
+  button reinventing its own hover style.
+*/
+.cta-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.4s cubic-bezier(.22,.9,.28,1), box-shadow 0.4s cubic-bezier(.22,.9,.28,1);
+  will-change: transform;
+}
+.cta-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.4) 48%, rgba(255,255,255,0.4) 56%, transparent 68%);
+  transform: translateX(-140%);
+  transition: transform 0.75s cubic-bezier(.22,.9,.28,1);
+}
+/* Every CTA's visible label must be wrapped in a real element (a <span>),
+   not left as bare text — this rule is what lifts that span above the
+   grass-bloom illustrations (z-index: 1, see .cta-bloom below). Bare text
+   nodes can't be targeted by `> *` and, per CSS stacking rules, in-flow
+   inline text actually paints *behind* positioned descendants regardless of
+   DOM order — so without the wrapper span, the bloom would sit on top of
+   the label instead of behind it. */
+.cta-btn > * { position: relative; z-index: 2; }
+
+/* Grass-bloom hover effect (components/CtaBloom.tsx renders the markup this
+   styles) — a few small illustrations sprout up from the bottom edge of the
+   button, like blades of grass, instead of the drop-shadow glow this used to
+   have. `.cta-btn > .cta-bloom` (not just `.cta-bloom`) is deliberate: it's
+   more specific than the `.cta-btn > *` rule above, so it reliably wins the
+   z-index tug-of-war regardless of which rule happens to be declared later
+   in this file — the exact "two same-specificity rules, order decides"
+   trap that caused the original Placeholder positioning bug on this project.
+   Triggers on :hover AND :active AND :focus-visible, not hover alone —
+   touch devices and keyboard navigation don't reliably produce a persistent
+   :hover state, so relying on :hover only would make this effect invisible
+   on phones and for keyboard users. */
+.cta-btn > .cta-bloom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.cta-bloom__blade {
+  position: absolute;
+  bottom: 4%;
+  width: 1.5em;
+  height: 1.5em;
+  object-fit: contain;
+  opacity: 0;
+  transform: translateX(-50%) scaleY(0.2) translateY(40%);
+  transform-origin: bottom center;
+  transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cta-btn:hover .cta-bloom__blade,
+.cta-btn:active .cta-bloom__blade,
+.cta-btn:focus-visible .cta-bloom__blade {
+  opacity: 0.62;
+  transform: translateX(-50%) scaleY(1) translateY(0);
+}
+
+/* Lift stays (a physical "picking up" cue) but the box-shadow glow that used
+   to accompany it is gone — the grass bloom above is the hover feedback now,
+   not a shadow. */
+.cta-btn:hover,
+.cta-btn:focus-visible {
+  transform: translateY(-3px);
+}
+.cta-btn:hover::before { transform: translateX(140%); }
+.cta-btn:active {
+  transform: translateY(-1px) scale(0.96);
+  transition-duration: 0.15s;
+}
+
+/* Outline variant (the secondary "Enquire" button on the homepage intro card) —
+   fills solid on hover instead of sweeping, so the two CTA styles read as
+   distinct primary/secondary actions rather than duplicates of each other.
+   Grass bloom (above) applies here too, unchanged — only the fill/border
+   color response below is specific to this variant. */
+.cta-btn--outline {
+  transition: transform 0.4s cubic-bezier(.22,.9,.28,1),
+    background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+.cta-btn--outline::before { display: none; }
+.cta-btn--outline:hover,
+.cta-btn--outline:focus-visible {
+  background-color: #241F1A;
+  color: #F7F2EA;
+  border-color: #241F1A;
+  transform: translateY(-3px);
+}
+.cta-btn--outline:active {
+  transform: translateY(-1px) scale(0.96);
+  transition-duration: 0.15s;
+}
