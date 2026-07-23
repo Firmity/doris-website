@@ -32,7 +32,7 @@ export default function Events() {
 
       <section className="relative overflow-hidden max-w-[1000px] mx-auto px-6 md:px-20 pt-20 pb-10">
         <Illustration name="wildflower-spray" className="absolute top-6 right-2 w-14 sm:w-32 md:w-40 rotate-6" />
-        <p className="text-[15px] leading-relaxed text-muted">
+        <p className="relative z-10 text-[15px] leading-relaxed text-muted">
           From an intimate ceremony on the open terrace to a full banquet for ninety, Doris hosts
           weddings, conferences, and celebrations with the Dhauladhar range as backdrop.
         </p>

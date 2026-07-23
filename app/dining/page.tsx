@@ -30,7 +30,7 @@ export default function Dining() {
 
       <section className="relative overflow-hidden max-w-[1000px] mx-auto px-6 md:px-20 pt-20 pb-10">
         <Illustration name="leaf-sprig" className="absolute top-10 right-0 w-14 sm:w-28 md:w-36 -rotate-12" />
-        <p className="text-[15px] leading-relaxed text-muted">
+        <p className="relative z-10 text-[15px] leading-relaxed text-muted">
           Doris's restaurant seats 90 behind full-height glass, with the Dhauladhar range filling
           the view on clear mornings. An open terrace extends the same room outdoors for evenings
           when the weather holds.
@@ -57,7 +57,7 @@ export default function Dining() {
 
       <section className="bg-sand relative overflow-hidden">
         <Illustration name="eucalyptus" className="absolute top-6 right-6 w-14 sm:w-20 md:w-28 lg:w-36 rotate-[14deg]" />
-        <div className="max-w-[1000px] mx-auto px-6 md:px-20 py-20 text-center">
+        <div className="relative z-10 max-w-[1000px] mx-auto px-6 md:px-20 py-20 text-center">
           <h2 className="font-serif text-2xl md:text-3xl mb-4">Outdoor catering</h2>
           <p className="text-[14.5px] leading-relaxed text-muted max-w-[60ch] mx-auto">
             Doris also caters events off-property — for weddings, gatherings, and functions across

@@ -27,7 +27,7 @@ export default function Contact() {
       <section className="relative overflow-hidden max-w-[1200px] mx-auto px-6 md:px-20 pt-[150px] pb-24 grid md:grid-cols-2 gap-16">
         <Illustration name="babys-breath" className="absolute top-10 right-8 w-14 sm:w-24 lg:w-32 rotate-6" />
         <Illustration name="lavender" className="absolute bottom-4 left-4 w-14 sm:w-24 md:w-28 lg:w-36 rotate-[-10deg]" />
-        <div>
+        <div className="relative z-10">
           <div className="text-xs tracking-[0.16em] uppercase text-terracotta mb-3">Contact</div>
           <h1 className="font-serif text-3xl md:text-4xl mb-7">Get in touch</h1>
           <div className="text-[15px] leading-loose text-[#3A332C] mb-7">

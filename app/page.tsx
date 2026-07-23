@@ -73,7 +73,7 @@ export default function Home() {
         <Reveal>
           <div className="relative overflow-hidden bg-cream border border-line px-6 md:px-14 py-10 flex justify-between items-center flex-wrap gap-7 shadow-[0_20px_50px_rgba(36,31,26,0.08)]">
             <Illustration name="hydrangea" className="absolute -top-6 -right-4 w-14 sm:w-24 lg:w-36 rotate-12" />
-            <p className="text-base leading-relaxed text-[#59504A] max-w-[56ch] m-0">
+            <p className="relative z-10 text-base leading-relaxed text-[#59504A] max-w-[56ch] m-0">
               Doris sits a short drive from McLeod Ganj, with terrace views of the Dhauladhar
               range, a glass-walled restaurant on the fourth floor, and rooms dressed simply and
               well.
@@ -104,16 +104,16 @@ export default function Home() {
           </div>
           <div className="relative overflow-hidden">
             <Illustration name="petals-scattered" className="absolute -top-4 right-0 w-12 sm:w-20 md:w-28 lg:w-32" />
-            <div className="text-xs tracking-[0.14em] uppercase text-terracotta mb-4">Our Story</div>
-            <blockquote className="font-serif italic text-[26px] md:text-[40px] leading-[1.3] mb-6">
+            <div className="relative z-10 text-xs tracking-[0.14em] uppercase text-terracotta mb-4">Our Story</div>
+            <blockquote className="relative z-10 font-serif italic text-[26px] md:text-[40px] leading-[1.3] mb-6">
               &ldquo;Doris was built for travellers who come for the mountains and stay for the
               quiet.&rdquo;
             </blockquote>
-            <p className="text-[15px] leading-relaxed text-muted max-w-[46ch] mb-5">
+            <p className="relative z-10 text-[15px] leading-relaxed text-muted max-w-[46ch] mb-5">
               Run by Hotel Royal Oasis, every room at Doris looks out toward the Dhauladhar
               range, and every evening ends on the open terrace.
             </p>
-            <Link href="/about" className="text-[13px] border-b border-terracotta pb-1 no-underline">
+            <Link href="/about" className="relative z-10 text-[13px] border-b border-terracotta pb-1 no-underline">
               Read our story &rarr;
             </Link>
           </div>

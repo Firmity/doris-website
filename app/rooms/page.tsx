@@ -47,7 +47,7 @@ export default function Rooms() {
 
       <section className="relative overflow-hidden max-w-[1200px] mx-auto px-6 md:px-20 pt-20 pb-10">
         <Illustration name={roomsIllustrations[0]} className="absolute top-2 left-2 w-16 sm:w-24 md:w-32 lg:w-36 rotate-6" />
-        <p className="text-[15px] leading-relaxed text-muted max-w-[60ch]">
+        <p className="relative z-10 text-[15px] leading-relaxed text-muted max-w-[60ch]">
           Twenty-five rooms across two categories — Executive and Deluxe — each with split AC, an
           Android TV, and a view toward the Dhauladhar range. Choose European Plan (room only),
           Continental Plan (with breakfast), or Modified American Plan (breakfast and dinner).
@@ -74,7 +74,7 @@ export default function Rooms() {
         <Illustration name={roomsIllustrations[2]} className="absolute top-2 left-2 w-14 sm:w-20 md:w-28 lg:w-32 rotate-12" />
         <div className="relative overflow-hidden bg-sand border border-line px-6 md:px-14 py-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-7">
           <Illustration name={roomsIllustrations[3]} className="absolute -top-4 -right-4 w-16 sm:w-20 rotate-[14deg]" opacity={0.2} />
-          <div>
+          <div className="relative z-10">
             <h2 className="font-serif text-2xl md:text-3xl mb-3">Rates & plans</h2>
             <p className="text-[14.5px] leading-relaxed text-muted max-w-[56ch]">
               Executive and Deluxe rooms are both available on EP (room only), CP (with
@@ -94,7 +94,7 @@ export default function Rooms() {
 
       <section className="bg-sand relative overflow-hidden">
         <Illustration name="eucalyptus" className="absolute top-8 left-6 w-16 sm:w-24 md:w-32 lg:w-36 rotate-12" />
-        <div className="max-w-[1200px] mx-auto px-6 md:px-20 py-24">
+        <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-20 py-24">
           <div className="text-xs tracking-[0.14em] uppercase text-terracotta mb-3">In every room</div>
           <h2 className="font-serif text-2xl md:text-3xl mb-9">Room amenities</h2>
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -110,9 +110,9 @@ export default function Rooms() {
 
       <section className="relative overflow-hidden max-w-[1200px] mx-auto px-6 md:px-20 py-24">
         <Illustration name="wildflower-bouquet" className="absolute top-10 right-2 w-16 sm:w-24 md:w-28 lg:w-32 rotate-6" />
-        <div className="text-xs tracking-[0.14em] uppercase text-terracotta mb-3">On the property</div>
-        <h2 className="font-serif text-2xl md:text-3xl mb-9">Hotel facilities & services</h2>
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
+        <div className="relative z-10 text-xs tracking-[0.14em] uppercase text-terracotta mb-3">On the property</div>
+        <h2 className="relative z-10 font-serif text-2xl md:text-3xl mb-9">Hotel facilities & services</h2>
+        <div className="relative z-10 grid gap-3 grid-cols-1 md:grid-cols-2">
           {facilities.map((f) => (
             <div key={f} className="flex items-start gap-3.5 bg-white border border-line px-4 py-3.5 shadow-[0_2px_10px_rgba(36,31,26,0.04)]">
               <Icon name={matchIcon(f)} className="w-5 h-5 text-terracotta shrink-0 mt-0.5" />

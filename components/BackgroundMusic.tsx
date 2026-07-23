@@ -1,7 +1,16 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-const STORAGE_KEY = "doris-music-muted";
+// v2: bumped from "doris-music-muted" — that key could get permanently stuck
+// at "true" during earlier dev/QA passes (anyone who ever clicked the mute
+// toggle once had it persist forever, silently skipping the autoplay attempt
+// and the gesture-fallback listeners below on every future load — the site
+// would then only ever make sound again via a direct, manual toggle click).
+// Renaming invalidates that stale state for every existing browser so music
+// actually autoplays-on-first-gesture by default again, per the "music
+// should play on default" requirement. Real, deliberate future mute choices
+// still persist normally under this new key.
+const STORAGE_KEY = "doris-music-muted-v2";
 const DEFAULT_VOLUME = 0.58; // gentle/low per the brief — this is on top of the track already being mixed quiet
 
 /**
@@ -55,10 +64,12 @@ export default function BackgroundMusic() {
       const cleanup = () => {
         window.removeEventListener("pointerdown", start);
         window.removeEventListener("keydown", start);
+        window.removeEventListener("touchstart", start);
         window.removeEventListener("touchend", start);
       };
       window.addEventListener("pointerdown", start, { once: true });
       window.addEventListener("keydown", start, { once: true });
+      window.addEventListener("touchstart", start, { once: true, passive: true });
       window.addEventListener("touchend", start, { once: true, passive: true });
     });
     tryPlay();

@@ -32,7 +32,7 @@ export default function Picnic() {
 
       <section className="relative overflow-hidden max-w-[900px] mx-auto px-6 md:px-20 pt-20 pb-10">
         <Illustration name="pink-flower" className="absolute top-8 right-2 w-14 sm:w-28 md:w-36 rotate-[10deg]" />
-        <p className="text-[15px] leading-relaxed text-muted">
+        <p className="relative z-10 text-[15px] leading-relaxed text-muted">
           Not staying the night? Spend the day at Doris instead. Our day-picnic package opens up
           the terrace, lounge, and grounds for a few relaxed hours with the Dhauladhar range as
           the backdrop — no room required.
@@ -56,7 +56,7 @@ export default function Picnic() {
 
       <section className="bg-sand relative overflow-hidden">
         <Illustration name="hydrangea" className="absolute bottom-6 right-6 w-14 sm:w-20 md:w-28 lg:w-36 rotate-6" />
-        <div className="max-w-[900px] mx-auto px-6 md:px-20 py-20 text-center">
+        <div className="relative z-10 max-w-[900px] mx-auto px-6 md:px-20 py-20 text-center">
           <h2 className="font-serif text-2xl md:text-3xl mb-4">Plan your day visit</h2>
           <p className="text-[14.5px] leading-relaxed text-muted mb-6">
             Picnic slots are limited on weekends and during peak season — enquire ahead to

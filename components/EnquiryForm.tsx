@@ -69,7 +69,7 @@ export default function EnquiryForm() {
   };
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+    <form className="relative z-10 flex flex-col gap-5" onSubmit={handleSubmit}>
       <div>
         <label className="text-xs tracking-wide uppercase text-muted block mb-2">Name</label>
         <input

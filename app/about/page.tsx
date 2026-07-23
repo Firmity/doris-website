@@ -23,17 +23,17 @@ export default function About() {
 
       <section className="relative overflow-hidden max-w-[800px] mx-auto px-6 md:px-20 py-20">
         <Illustration name="fern-1" className="absolute top-4 right-2 w-14 sm:w-24 md:w-32 rotate-[8deg]" />
-        <p className="text-base leading-loose text-[#3A332C] mb-6">
+        <p className="relative z-10 text-base leading-loose text-[#3A332C] mb-6">
           Doris Mountain Boutique Hotel opened in Shivnagar, on the edge of Dharamshala, with a
           simple idea: give travellers coming for the Dhauladhar range a place to stay that takes
           the view as seriously as they do.
         </p>
-        <p className="text-base leading-loose text-[#3A332C] mb-6">
+        <p className="relative z-10 text-base leading-loose text-[#3A332C] mb-6">
           Twenty-five rooms across two categories, a glass-walled restaurant on the fourth floor,
           and an open terrace that doubles as an event space. The hotel is run by Hotel Royal
           Oasis, a short drive from McLeod Ganj, Dharamkot, and the Triund trailhead.
         </p>
-        <p className="text-base leading-loose text-[#3A332C]">
+        <p className="relative z-10 text-base leading-loose text-[#3A332C]">
           Our name is small on purpose — Doris is a house, not a hotel chain, and it's meant to
           feel that way from the moment you arrive.
         </p>

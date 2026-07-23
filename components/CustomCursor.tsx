@@ -84,10 +84,23 @@ export default function CustomCursor() {
       el.style.opacity = "0";
     };
 
+    // Bug this fixes: press-and-hold the mouse button on a link/button, then
+    // drag — anchors and images are `draggable` by default, so the browser's
+    // native drag-and-drop kicks in on that hold-and-move. Once native drag
+    // starts, the browser stops firing `pointermove`/`mousemove` on window
+    // (it fires `drag`/`dragover` instead), so `onPointerMove` above never
+    // runs again and the flower visually freezes mid-button — exactly the
+    // reported symptom, released only once the drag operation itself ends
+    // (e.g. moving over the URL bar drops it). This site never needs native
+    // drag on any link/button/image, so it's simplest and safest to just
+    // suppress `dragstart` globally rather than special-case every element.
+    const onDragStart = (e: DragEvent) => e.preventDefault();
+
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     document.addEventListener("pointerover", onPointerOver);
     document.addEventListener("pointerout", onPointerOut);
     document.addEventListener("mouseleave", onLeaveWindow);
+    window.addEventListener("dragstart", onDragStart);
 
     return () => {
       document.documentElement.classList.remove("has-custom-cursor");
@@ -95,6 +108,7 @@ export default function CustomCursor() {
       document.removeEventListener("pointerover", onPointerOver);
       document.removeEventListener("pointerout", onPointerOut);
       document.removeEventListener("mouseleave", onLeaveWindow);
+      window.removeEventListener("dragstart", onDragStart);
       if (rafId.current != null) cancelAnimationFrame(rafId.current);
     };
   }, []);

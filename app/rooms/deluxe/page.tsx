@@ -34,13 +34,13 @@ export default function DeluxeRoom() {
 
       <section className="relative overflow-hidden max-w-[1200px] mx-auto px-6 md:px-20 pt-20 pb-10 grid md:grid-cols-[1.2fr_1fr] gap-14">
         <Illustration name="cherry-blossom" className="absolute top-6 right-6 w-12 sm:w-16 lg:w-24 rotate-12" />
-        <p className="text-[15px] leading-relaxed text-muted">
+        <p className="relative z-10 text-[15px] leading-relaxed text-muted">
           Deluxe Rooms are the larger of the two categories at Doris — more space, the same mountain-facing outlook, and easy access to the open terrace and fourth-floor restaurant. Thirteen rooms in total, double occupancy.
         </p>
         <div className="relative overflow-hidden bg-sand border border-line px-6 py-7">
           <Illustration name={deluxeIllustrations[1]} className="absolute -top-3 -right-3 w-14 sm:w-16 rotate-[14deg]" opacity={0.2} />
-          <div className="text-xs tracking-wider uppercase text-terracotta mb-3">Rates & plans</div>
-          <p className="text-[14px] leading-relaxed text-muted mb-5">
+          <div className="relative z-10 text-xs tracking-wider uppercase text-terracotta mb-3">Rates & plans</div>
+          <p className="relative z-10 text-[14px] leading-relaxed text-muted mb-5">
             Available on EP (room only), CP (with breakfast), and MAP (breakfast &amp; dinner)
             plans, with extra-bed options on request.
           </p>
@@ -64,7 +64,7 @@ export default function DeluxeRoom() {
 
       <section className="bg-sand relative overflow-hidden">
         <Illustration name="pink-flower" className="absolute -bottom-6 -right-6 w-16 sm:w-24 md:w-32 lg:w-40 -rotate-6" />
-        <div className="max-w-[1200px] mx-auto px-6 md:px-20 py-20">
+        <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-20 py-20">
           <h2 className="font-serif text-2xl md:text-3xl mb-7">In every room</h2>
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {["Split AC","Tea / coffee maker","Android TV with channels","Study chair","Intercom & wake-up service","Toiletries & one bottle water","Room service","Toiletry kit on request"].map((a) => (
