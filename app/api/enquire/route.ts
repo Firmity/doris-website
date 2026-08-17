@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { sendGuestConfirmation, sendHotelNotification, type EnquiryDetails } from "@/lib/mailer";
+import { isMailerConfigured, sendGuestConfirmation, type EnquiryDetails } from "@/lib/mailer";
+import { appendEnquiryRow } from "@/lib/sheets";
 import { isRateLimited } from "@/lib/rateLimit";
 
-// nodemailer opens a real TCP/TLS socket to Gmail's SMTP servers — that API
-// is only available in the Node.js runtime, not the Edge runtime, so this
-// must be pinned explicitly (App Router route handlers don't default to
-// Node.js on every hosting target).
+// Both nodemailer (real TCP/TLS socket to Gmail) and google-auth-library's
+// JWT signing (Node's crypto module) need APIs that only exist in the
+// Node.js runtime, not the Edge runtime — must be pinned explicitly since
+// App Router route handlers don't default to Node.js on every hosting
+// target.
 export const runtime = "nodejs";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,26 +77,34 @@ export async function POST(request: Request) {
     );
   }
 
-  // Hotel notification is the critical path — if this fails, the enquiry
-  // never reached anyone, so the request is reported as failed and the
-  // client falls back to mailto:.
+  // Google Sheets is the critical path — if this fails, the enquiry never
+  // reached anyone, so the request is reported as failed and the client
+  // falls back to mailto:. (Previously this was the Gmail SMTP send; that
+  // moved to best-effort-only below since this Gmail account can't
+  // generate App Passwords, making SMTP unusable as the primary path.)
   try {
-    await sendHotelNotification(validation.data);
+    await appendEnquiryRow(validation.data);
   } catch (err) {
-    console.error("[SMTP_ERR] hotel notification failed:", err instanceof Error ? err.message : err);
+    console.error("[SHEETS_ERR] appending enquiry row failed:", err instanceof Error ? err.message : err);
     return NextResponse.json(
-      { success: false, error: "[SMTP_ERR] Failed to send enquiry" },
+      { success: false, error: "[SHEETS_ERR] Failed to record enquiry" },
       { status: 502 }
     );
   }
 
-  // Guest confirmation is a nice-to-have, not the critical path — the hotel
-  // already has the enquiry at this point regardless, so a failure here is
-  // logged but doesn't turn the whole request into a failure for the guest.
-  try {
-    await sendGuestConfirmation(validation.data);
-  } catch (err) {
-    console.error("[SMTP_ERR] guest confirmation failed:", err instanceof Error ? err.message : err);
+  // Guest confirmation email is a nice-to-have, not the critical path — the
+  // enquiry is already recorded in the sheet at this point regardless. Skip
+  // cleanly (one log line) rather than attempt-and-fail on every request
+  // when SMTP isn't configured, instead of throwing the same [CONFIG_ERR]
+  // repeatedly.
+  if (isMailerConfigured()) {
+    try {
+      await sendGuestConfirmation(validation.data);
+    } catch (err) {
+      console.error("[SMTP_ERR] guest confirmation failed:", err instanceof Error ? err.message : err);
+    }
+  } else {
+    console.info("[SMTP_SKIP] guest confirmation skipped — EMAIL_APP_PASSWORD not configured");
   }
 
   return NextResponse.json({ success: true });
