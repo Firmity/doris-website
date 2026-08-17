@@ -1,10 +1,25 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import CtaBloom from "@/components/CtaBloom";
+import DatePicker, { formatDateDisplay } from "@/components/DatePicker";
 
 const ENQUIRY_EMAIL = "dorismbhotel@gmail.com";
 
 type Status = "idle" | "sending" | "sent" | "fallback" | "error";
+
+/**
+ * Turns the two ISO date-picker values into the single human-readable
+ * string the backend still expects (EnquiryDetails.dates, unchanged — see
+ * lib/mailer.ts / lib/sheets.ts). Keeping the wire format as one string
+ * means the check-in/check-out UI split is purely a frontend concern; the
+ * API route, Sheets row, and confirmation email didn't need to change.
+ */
+function formatDateRange(checkIn: string, checkOut: string): string {
+  if (checkIn && checkOut) return `${formatDateDisplay(checkIn)} → ${formatDateDisplay(checkOut)}`;
+  if (checkIn) return `Check-in ${formatDateDisplay(checkIn)}`;
+  if (checkOut) return `Check-out ${formatDateDisplay(checkOut)}`;
+  return "";
+}
 
 /**
  * Submits to /api/enquire (Next.js route handler -> nodemailer -> Gmail SMTP,
@@ -20,18 +35,20 @@ type Status = "idle" | "sending" | "sent" | "fallback" | "error";
  * silently rejects the submission if it's non-empty.
  */
 export default function EnquiryForm() {
-  const [form, setForm] = useState({ name: "", email: "", dates: "", message: "", website: "" });
+  const [form, setForm] = useState({ name: "", email: "", checkIn: "", checkOut: "", message: "", website: "" });
   const [status, setStatus] = useState<Status>("idle");
 
   const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const datesLabel = formatDateRange(form.checkIn, form.checkOut);
 
   const openMailtoFallback = () => {
     const subject = `Enquiry from ${form.name || "website"}`;
     const body = [
       `Name: ${form.name}`,
       `Email: ${form.email}`,
-      `Dates: ${form.dates}`,
+      `Dates: ${datesLabel || "—"}`,
       "",
       form.message,
     ].join("\n");
@@ -47,7 +64,16 @@ export default function EnquiryForm() {
       const res = await fetch("/api/enquire", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        // Wire format is unchanged (name/email/dates/message/website) — the
+        // API route, Sheets row, and confirmation email all still just see
+        // a single `dates` string, per formatDateRange() above.
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          dates: datesLabel,
+          message: form.message,
+          website: form.website,
+        }),
       });
 
       if (!res.ok) {
@@ -92,14 +118,33 @@ export default function EnquiryForm() {
           className="w-full text-base sm:text-sm px-3.5 py-3 border border-line bg-white text-ink"
         />
       </div>
-      <div>
-        <label className="text-xs tracking-wide uppercase text-muted block mb-2">Dates</label>
-        <input
-          type="text"
-          placeholder="Check-in – check-out"
-          value={form.dates}
-          onChange={update("dates")}
-          className="w-full text-base sm:text-sm px-3.5 py-3 border border-line bg-white text-ink"
+      {/* grid-cols-2 even on mobile (not stacked) — two half-width fields
+          side by side reads clearly as a "from / to" pair at any width, and
+          each popover calendar below still has its own
+          calc(100vw-3rem) clamp so it never overflows the viewport. */}
+      <div className="grid grid-cols-2 gap-3">
+        <DatePicker
+          label="Check-in"
+          value={form.checkIn}
+          onChange={(iso) =>
+            setForm((f) => ({
+              ...f,
+              checkIn: iso,
+              // Clear an already-picked check-out if it's now before the
+              // newly-picked check-in, instead of silently leaving an
+              // invalid (checkOut < checkIn) pair sitting in state.
+              checkOut: f.checkOut && f.checkOut < iso ? "" : f.checkOut,
+            }))
+          }
+          placeholder="Select date"
+        />
+        <DatePicker
+          label="Check-out"
+          value={form.checkOut}
+          onChange={(iso) => setForm((f) => ({ ...f, checkOut: iso }))}
+          minDate={form.checkIn || undefined}
+          placeholder="Select date"
+          align="end"
         />
       </div>
       <div>
