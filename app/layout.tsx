@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import BackgroundMusic from "@/components/BackgroundMusic";
+import { Analytics } from "@vercel/analytics/next";
 
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-lora" });
 
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <CustomCursor />
         <BackgroundMusic />
+        <Analytics />
       </body>
     </html>
   );
